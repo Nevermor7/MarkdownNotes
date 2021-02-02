@@ -454,7 +454,7 @@ System.out.println(arr[1][0]); // 报空指针异常
 
 ### 数组元素的赋值⭐⭐
 
-**杨辉三角**
+1.杨辉三角
 
 ```java
 //1.声明并初始化二维数组
@@ -480,15 +480,15 @@ for(int i = 0; i < yangHui.length; i++){
 }
 ```
 
-**随机赋值**
+2.随机赋值
 
 创建一个长度为6的int型数组，要求数组元素的值都在1-30之间，且是随机赋值。同时，要求元素的值***各不相同***。
 
 ```java
-test
+
 ```
 
-**回形数**
+3.回形数
 
 键盘输入一个正整数，打印出该正整数对应的回形矩阵。
 
@@ -500,15 +500,131 @@ test
 
 ### 求数值型数组中元素的最大值、最小值、平均值、总和等。⭐
 
+定义一个int型的一维数组，包含10个元素，分别赋一些随机整数，然后求出所有元素的最大值，最小值，和值，平均值，并输出。要求所有随机数都是两位数。
 
+```java
+int[] arr = new int[10];
+// 赋值
+for(int i = 0; i < arr.length; i++){
+    arr[i] = (int)(Math.random() * 90 + 10);
+}
+// 遍历
+for(int i = 0; i < arr.length; i++){
+    System.out.print(arr[i] + "\t");
+}
+System.out.println();
+// 最大值
+int max = arr[0];
+for(int i = 1; i < arr.length; i++){ // 初始值取数组第一个元素时循环从数组第二个元素开始
+    if(max < arr[i]){
+        max = arr[i];
+    }
+}
+System.out.println("最大值为：" + max);
+......
+```
 
 ### 数组的复制、反转、查找（线性查找、二分查找）⭐
 
+1.复制
 
+```java
+// 错误的复制（赋值）
+int[] arr1 = new int[]{1, 2, 3};
+int[] arr2 = arr1; // 这并不是数组的复制，堆空间中只new了一个数组，arr1和arr2都指向这一个数组。arr2相当于创建了一个arr1的快捷方式。
+arr2[2] = 4;
+System.out.println(arr1[2]); // 4	arr1和arr2指向同一个数组，arr2操作后arr1也会改变。
+// 正确的复制
+int[] arr3 = new int[]{4, 5, 6};
+int[] arr4 = new int[arr1.length];
+for(int i = 0; i < arr3.length; i++){
+    arr4[i] = arr3[i];
+}
+// 操作arr3和arr4互不影响
+```
 
-### 数组元素的排序算法⭐⭐⭐
+2.反转
 
+```java
+// 数组的反转（交换两个变量的值）
+String[] arr = new String[]{"AA", "BB", "CC", "DD", "EE"};
+// 方式一
+for(int i = 0; i < arr.length / 2; i++){
+    String temp = arr[i];
+    arr[i] = arr[arr.length - i -1];
+    arr[arr.length - i -1] = temp;
+}
+// 方式二
+for(int i = 0, j = arr.length - 1; i < j; i++, j--){
+    String temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+}
+```
 
+**3.查找**
+
+```java
+// 线性查找
+String[] arr = new String[]{"AA", "BB", "CC", "DD", "EE"};
+String dest = "CC";
+boolean isFlag = false;
+for(int i = 0; i < arr.length; i++){
+    if(dest.equals(arr[i])){
+        System.out.println("找到啦！索引为：" + i);
+        isFlag = true;
+        break;
+    }
+}
+if(!isFlag){
+    System.out.println("未找到！");
+}
+// 二分查找（前提是有序）
+int[] arr2 = new int[]{-66, -58, -33, -1, 23, 55, 233};
+int dest1 = -33;
+int head = 0; // 初始首索引
+int end = arr2.length - 1; // 初始尾索引
+boolean isFlag1 = false;
+while(head <= end){
+    int middle = (head + end) / 2;
+    if(dest1 == arr2[middle]){
+        System.out.println("找到啦！索引为：" + middle);
+        isFlag = true;
+        break;
+    }else if(dest1 < arr2[middle]){
+        end = middle - 1;
+    }else{
+        head = middle + 1;
+    }
+}
+if(!isFlag1){
+    System.out.println("未找到！");
+}
+```
+
+### 排序算法⭐⭐⭐
+
+排序算法分类：
+
+- 内部排序：排序操作在内存中完成。
+- 外部排序：参与排序的数据非常多，数据量巨大，计算机无法将排序过程在内存中完成，必须借助于外部存储器。外部排序最常见的是多路归并排序。可以认为外部排序是多次内部排序组成。
+
+**十大内部排序算法：**
+
+- 选择排序
+  1. 直接选择排序
+  2. 堆排序（理解）
+
+- 交换排序
+  1. **冒泡排序**（掌握并能够手写）
+  2. **快速排序**（掌握并能够手写）
+- 插入排序
+  1. 直接插入排序
+  2. 折半插入排序
+  3. Shell排序（希尔排序）
+- 归并排序（理解）
+- 桶式排序
+- 基数排序
 
 ## 由数组.length引发的思考
 
@@ -544,6 +660,13 @@ double[][]                [[D
 short[]                   [S
 byte[]                    [B
 boolean[]                 [Z
+```
+
+```java
+// 不同类型的数组地址值不能互换，否则会报错
+int[] x = new int[3];
+int[][] y = new int[3][2];
+x = y; // 报错
 ```
 
 - 基本数据类型和对象的区别
