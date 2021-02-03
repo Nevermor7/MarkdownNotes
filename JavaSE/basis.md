@@ -617,7 +617,61 @@ if(!isFlag1){
 
 - 交换排序
   1. **冒泡排序**（掌握并能够手写）
+
+  ```java
+  // 冒泡排序
+  // 遍历所有元素，比较任意两个相邻元素，确保前一元素比后一元素小（升序），否则交换这两个元素。
+  // 一次遍历从N个元素找出一个最大值，下一次遍历剩下的N-1个元素。若某一次遍历未发生元素互换，说明序列已经有序，跳出循环。
+  int[] arr1 = new int[]{23, 32, 11, -5, -34, 22};
+  for (int i = 0; i < arr1.length - 1; i++) {
+      for (int j = 0; j < arr1.length - 1 - i; j++) {
+          if (arr1[j] > arr1[j + 1]) {
+              int temp = arr1[j];
+              arr1[j] = arr1[j + 1];
+              arr1[j + 1] = temp;
+          }
+      }
+  }
+  ```
+
   2. **快速排序**（掌握并能够手写）
+
+  ```java
+  // 快速排序
+  // 1.在数组中选一个基准数（通常为数组第一个）;
+  // 2.将数组中小于基准数的数据移到基准数左边，大于基准数的移到右边;
+  // 3.对于基准数左、右两边的数组，不断重复以上两个过程，直到每个子集只有一个元素，即为全部有序。
+  private static void swap(int[] data, int i, int j) { // 定义一个方法用与交换数组下标为i和j的元素
+      int temp = data[i];
+      data[i] = data[j];
+      data[j] = temp;
+  }
+  private static void subSort(int[] data, int start, int end) {
+      if (start < end) {
+          int base = data[start];
+          int low = start;
+          int high = end + 1;
+          while (true) {
+              while (low < end && data[++low] - base <= 0) {
+              }
+              while (high > start && data[--high] >= 0) {
+              }
+              if (low < high) {
+                  swap(data, low, high);
+              } else {
+                  break;
+              }
+          }
+          swap(data, start, high);
+          subSort(data, start, high - 1);
+          subSort(data, high + 1, end);
+      }
+  }
+  public static void quickSort(int[] data) {
+      subSort(data, 0, data.length - 1);
+  }
+  ```
+
 - 插入排序
   1. 直接插入排序
   2. 折半插入排序
@@ -626,9 +680,25 @@ if(!isFlag1){
 - 桶式排序
 - 基数排序
 
+| 排序方法       | 时间复杂度（平均）       | 时间复杂度（最坏）   | 时间复杂度（最好）   | 空间复杂度           | 稳定性 |
+| -------------- | ------------------------ | -------------------- | -------------------- | -------------------- | ------ |
+| 插入排序       | O(n<sup>2</sup>)         | O(n<sup>2</sup>)     | O(n<sup>2</sup>)     | O(1)                 | 稳定   |
+| 希尔排序       | O(n<sup>1.3</sup>)       | O(n<sup>2</sup>)     | O(n)                 | O(1)                 | 不稳定 |
+| 选择排序       | O(n<sup>2</sup>)         | O(n<sup>2</sup>)     | O(n<sup>2</sup>)     | O(1)                 | 不稳定 |
+| **堆排序**     | O(nlog<sub>2</sub>n)     | O(nlog<sub>2</sub>n) | O(nlog<sub>2</sub>n) | O(1)                 | 不稳定 |
+| 冒泡排序       | **O(n<sup>2</sup>)**     | O(n<sup>2</sup>)     | O(n<sup>2</sup>)     | O(1)                 | 稳定   |
+| ***快速排序*** | **O(nlog<sub>2</sub>n)** | O(n<sup>2</sup>)     | O(nlog<sub>2</sub>n) | O(nlog<sub>2</sub>n) | 不稳定 |
+| **归并排序**   | O(nlog<sub>2</sub>n)     | O(nlog<sub>2</sub>n) | O(nlog<sub>2</sub>n) | O(n)                 | 稳定   |
+|                |                          |                      |                      |                      |        |
+| 计数排序       | O(n+k)                   | O(n+k)               | O(n+k)               | O(n+k)               | 稳定   |
+| 桶排序         | O(n+k)                   | O(n<sup>2</sup>)     | O(n)                 | O(n+k)               | 稳定   |
+| 基数排序       | O(n*k)                   | O(n*k)               | O(n*k)               | O(n+k)               | 稳定   |
+
+**快速排序的平均时间复杂度最快。但也有缺点：排序不稳定、占用空间大（空间换时间）、不适用于少量数据。**
+
 ## 由数组.length引发的思考
 
-- 数组的length既不是方法也不是属性。因为在一个数组对象上调用length，会被Java编译器编译成一条`arraylength`指令（Java binary code）。而访问字段的语句会被编译成`getfield`或`getstatic`指令，调用方法的语句则会被编译成`invokestatic`，`invokevirtual`或`invokespecial`等指令。Java字节码中有许多单独针对数组的指令，它们在其它任何非数组类型的对象上调用都是毫无意义的。Java对数组的操作是指令级的。
+- 数组的`length`既不是方法也不是属性。因为在一个数组对象上调用`length`，会被Java编译器编译成一条`arraylength`指令（Java binary code）。而访问字段的语句会被编译成`getfield`或`getstatic`指令，调用方法的语句则会被编译成`invokestatic`，`invokevirtual`或`invokespecial`等指令。Java字节码中有许多单独针对数组的指令，它们在其它任何非数组类型的对象上调用都是毫无意义的。Java对数组的操作是指令级的。
 
 ```java
 https://bbs.csdn.net/topics/110121291
@@ -649,7 +719,7 @@ public class Demo01 {
 ```
 
 - 八大基本数据类型都不是`Object`的子类，故基本数据类型的变量都不是对象。
-- 数组是对象，数组的类型是Object的子类，通过`数组名.getClass().getName()`可知数组的类型如下：
+- 数组是对象，数组的类型是`Object`的子类，通过`数组名.getClass().getName()`可知数组的类型如下：
 
 ```
 Array type             Corresponding class Name
@@ -673,3 +743,13 @@ x = y; // 报错
   - 基本数据类型的存储原理：所有的简单数据类型不存在“引用”的概念，基本数据类型都是直接存储在内存中的栈上的，数据本身的值就是存储在栈空间里面，Java语言里面八种数据类型是这种存储模型；
   - 引用类型的存储原理：引用类型继承于`Object`类（也是引用类型）都是按照Java里面存储对象的内存模型来进行数据存储的，使用Java堆和栈来进行这种类型的数据存储，简单地讲，“引用”(存储对象在内存堆上的地址)是存储在有序的栈上的，而对象本身的值存储在堆上的；
   - 不论是基本数据类型还是引用类型，他们都会先在栈中分配一块内存，对于基本类型来说，这块区域包含的是基本类型的内容；而对于引用类型来说，这块区域包含的是指向真正内容的指针，真正的内容被分配在堆上。
+
+## Arrays工具类
+
+void sort(int[] a)	升序排列指定数组，底层使用快速排序实现。
+
+void fill(int[] a, int val)	将指定的int值分配给int数组的每个元素。
+
+void fill(int[] a, int fromIndex, int toIndex, int val)	将指定的int值分配给int数组中指定范围的每个元素。（包头不包尾）
+
+int binarySearch(char[] a, char key)	使用二分法搜索一有序数组中的指定值，找到后返回索引，未找到返回负数（-(insertion point) - 1）。
