@@ -56,7 +56,7 @@
       局部变量：加载到栈空间
 
 
-# return关键字
+# return
 
 使用范围：方法体中
 
@@ -474,6 +474,124 @@ JavaBean是指符合以下标准的Java类：
    `this(形参列表);`必须声明在第一行，所有一个构造器只能使用一次`this(形参列表);`
 
 ## 继承
+
+### 继承性的好处
+
+① 减少了代码的冗余，提高了代码的复用性。
+
+② 便于功能的拓展。
+
+③ 为多态性的使用提供了前提。
+
+### 继承的格式
+
+class A extends B { }
+
+A：子类、派生类、subclass
+
+B：父类、超类、基类、superclass
+
+一旦子类A继承父类B之后，子类A就获取了父类B中声明的所有属性和方法。**私有的结构也会继承只是不能直接访问**。
+
+extends：延展、扩展。子类的功能一般都比父类更强大。
+
+### Java中关于继承性的规定
+
+1. 一个类可以被多个子类继承。
+2. 单继承性：一个类只能有一个父类。
+3. 子父类是相对的概念。可以有多层继承。C继承B，B继承A，称B是C的直接父类，A是C的间接父类。
+4. 子类继承父类之后，就获取了直接父类和所有间接父类中声明的属性和方法。
+5. 所有Java类（除`java.lang.Object`类之外）都直接或间接地继承于`java.lang.Object`类。
+
+### 方法的重写（override / overwrite）
+
+1. 定义：子类继承父类以后，可以对父类中同名同参数的方法，进行覆盖操作。
+
+2. 应用：重写以后，当创建子类对象以后，通过子类对象调用父类中的同名同参数方法时，实际执行的是子类重写父类的方法。
+
+3. 规定：
+
+   ​			方法的声明：  `权限修饰符`	`返回值类型`	`方法名`（`形参列表`）	`throws`	`异常的类型` {
+
+   ​											// 方法体
+
+   ​									}
+
+   ​			约定俗成：子类中的叫重写的方法，父类中的叫被重写的方法。
+
+   ​	① 子类重写的方法的方法名和形参列表与父类被重写的方法的方法名和形参列表相同。
+
+   ​	② 子类重写的方法的权限修饰符不小于父类被重写的方法的权限修饰符。
+
+   ​			> 特殊情况：子类不能重写父类中声明为private权限的方法。
+
+   ​	③ 返回值类型：
+
+   ​			> 父类被重写的方法的返回值类型是void，则子类重写的方法的返回值类型只能是void。
+
+   ​			> 父类被重写的方法的返回值类型是A类型，则子类重写的方法的返回值类型可以是A类或A类的子类。
+
+   ​			> 父类被重写的方法的返回值类型是基本数据类型，则子类重写的方法的返回值类型必须是相同的基本数据类型。
+
+   ​	④ **子类重写的方法抛出的异常类型不大于父类被重写的方法抛出的异常类型**。
+
+   ​	⑤ **子类和父类中同名同参数的方法要么都声明为非static的（是重写），要么都声明为static的（不是重写）**。
+
+   ```java
+   public class Test {
+       public static void main(String[] args) {
+           /**
+           * 结论：
+           * 静态方法可以被继承，但是不能被覆盖，即不能重写。
+           * */
+           Son.staticMethod(); // 运行结果：Father staticMethod
+       }
+   }
+   class Father {
+       public static void staticMethod() {
+           System.out.println("Father staticMethod");
+       }
+   }
+   class Son extends Father {
+   }
+   ```
+
+   ```java
+   public class Test {
+       public static void main(String[] args) {
+           Father.staticMethod(); // 运行结果：Father staticMethod
+           /**
+            * 结论：
+            * 类执行了自己申明的静态方法。
+            * 该子类实际上只是将父类中的同名静态方法进行了隐藏，而非重写。
+            * */
+           Son.staticMethod(); // 运行结果：Son staticMethod
+           Father father = new Son();
+           /**
+            * 结论：
+            * 父类引用指向子类对象时，只会调用父类的静态方法。
+            * 父类和子类中含有的其实是两个没有关系的方法，它们的行为也并不具有多态性。
+            * */
+           father.staticMethod(); // 运行结果：Father staticMethod
+       }
+   }
+   class Father {
+       public static void staticMethod() {
+           System.out.println("Father staticMethod");
+       }
+   }
+   class Son extends Father {
+       public static void staticMethod() {
+           System.out.println("Son staticMethod");
+       }
+   }
+   // 1. 在Java中静态方法可以被继承，但是不能被覆盖，即不能重写。
+   // 2. 如果子类中也含有一个返回类型、方法名、参数列表均与之相同的静态方法，那么该子类实际上只是将父类中的该同名方法进行了隐藏，而非重写。
+   // 3. 父类引用指向子类对象时，只会调用父类的静态方法。所以，它们的行为也并不具有多态性。
+   // 4. 我们应该直接使用类名来访问静态方法，而不要使用对象引用来访问。
+   ```
+
+### super
 
 
 
