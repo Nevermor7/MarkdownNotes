@@ -466,12 +466,10 @@ JavaBean是指符合以下标准的Java类：
 ### this
 
 1. this可以用来修饰或调用：属性、方法、构造器。
-
 2. `this.属性`或`this.方法`时，this理解为"当前对象" 或 "当前正在创建的对象"(构造器中)。
-
-3. this调用构造器，`this();`表示调用无参构造器，`this(参数类型 参数名);`表示调用有参构造器。**只能调用其他构造器，不能形成递归调用（闭环）**。
-
-   `this(形参列表);`必须声明在第一行，所有一个构造器只能使用一次`this(形参列表);`
+3. this调用构造器，`this();`表示调用无参构造器，`this(参数类型 参数名);`表示调用有参构造器。**只能调用其他构造器，不能形成递归调用（闭环）**。所以：一个类有n个构造器，最多有n-1个构造器调用`this(形参列表);`
+4. `this(形参列表);`必须声明在第一行，所以一个构造器只能使用一次`this(形参列表)`;
+5. 使用`this`时，先去当前对象的类里面找，**找不到再去当前对象的父类找**。
 
 ## 继承
 
@@ -593,7 +591,222 @@ extends：延展、扩展。子类的功能一般都比父类更强大。
 
 ### super
 
+1. 需要用到`super`的情况：
 
+   ​	① 子类中有与父类同名的属性（属性不存在重写和覆盖，两个属性都会存在于子类中），指定父类的属性可以用`super.属性`。
+
+   ​	② 子类重写了父类方法，指定父类的方法可以用`super.方法`。
+
+   ​	③ `super(形参列表);`表示调用父类的构造器。
+
+2. 使用`super`时，先去直接父类找，找不到再去间接父类。
+
+3. 调用父类中的非重名属性或方法，使用`this`或缺省都可以。
+
+4. `super(形参列表);`必须声明在子类构造器的首行，与`this(形参列表);`冲突，只能二选一。
+
+5. 构造器中`super(形参列表);`和`this(形参列表);`都没有显式声明的情况下，编译器默认调用`super();`。
+
+6. 一个类有n个构造器，最多有n-1个构造器调用`this(形参列表);`最少有1个构造器调用`super(形参列表);`即一个类总会直接或间接地调用`super(形参列表);`
+
+### 子类对象的实例化过程
+
+1. 从结果上来看：子类继承父类以后，就获取了父类中声明的属性和方法。创建子类的对象，在堆空间中会加载所有父类中声明的属性和方法。
+
+2. 从过程上来看：当通过子类的构造器创建子类对象时，一定会直接或间接地调用其父类的构造器，进而调用父类的父类的构造器，直到调用了`java.lang.Object`类中的空参构造器为止。正因为调用过所有父类的构造器，内存中才会有所有父类的结构，子类对象才可以调用父类结构。
+
+   ps：虽然创建子类对象时，调用了父类的构造器，但是调用父类构造器时只是将父类结构加载到子类对象中，且并未暴露父类结构的地址，所以自始至终只`new`了一个对象。
 
 ## 多态
 
+多态：同一个事物的多种形态。
+
+什么是[对象的]多态性：父类的引用指向子类的对象（或子类的对象赋给父类的引用）。
+
+多态的使用：当调用子父类同名同参数的方法时，实际执行的是子类重写父类的方法 --- 虚拟方法调用。编译期只能调用父类中声明的方法，但运行期实际执行的是子类重写父类的方法。总结：编译看左边，运行看右边。**对象的多态性只适用于方法，不适用于属性**。
+
+多态性的使用前提： ① 类的继承关系	② 方法的重写
+
+```java
+public class Test {
+    public static void main() {
+    	Person p1 = new Man(); // 父类的引用指向子类的对象
+    	p1.eat(); // 男人：大口吃肉	（虚拟方法调用）
+    	p1.earnMoney(); // 编译时报错，只能调用Person类中声明了的方法
+	}
+}
+class Person {
+    private String name;
+    private int age;
+    public void eat() {
+        System.out.println("人：吃饭");
+    }
+}
+class Man extends Person {
+    private boolean isSmoking;
+    public void eat() {
+        System.out.println("男人：大口吃肉");
+    }
+    public void earnMoney() {
+        System.out.println("男人：挣钱养家");
+    }
+}
+```
+
+
+
+```java
+// 多态性的使用举例：
+public class AnimalTest {
+    public static void main(String[] args) {
+        AnimalTest test = new AnimalTest();
+        test.func(new Dog()); // 狗吃骨头汪汪汪
+        test.func(new Dog()); // 猫吃鱼喵喵喵
+    }
+    public void func(Animal animal) {
+        animal.eat();
+        animal.shout();
+    }
+    // 如果没有多态性，只能重载func方法，有多少个子类就需要重载多少次fanc（多态的好处）
+    public void func(Dog dog) {
+        dog.eat();
+        dog.shout();
+    }
+    public void func(Cat cat) {
+        cat.eat();
+        cat.shout();
+    }
+    ······
+}
+class Animal {
+    public void eat() {
+        System.out.println("动物吃东西");
+    }
+    public void shout() {
+        System.out.println("动物叫");
+    }
+}
+class Dog {
+    public void eat() {
+        System.out.println("狗吃骨头");
+    }
+    public void shout() {
+        System.out.println("汪汪汪");
+    }
+}
+class Cat {
+    public void eat() {
+        System.out.println("猫吃鱼");
+    }
+    public void shout() {
+        System.out.println("喵喵喵");
+    }
+}
+```
+
+
+
+虚拟方法调用：子类中重写了父类方法，在多态情况下（父类引用指向子类对象），将此时父类中被重写的方法称为虚拟方法，父类根据赋给它的不同子类对象，在运行时动态调用属于子类的重写方法。这种方法调用在编译期是无法确定的。
+
+动态绑定：编译时对象的类型为接收它的引用的类型，而方法的调用是在运行时确定的。
+
+```java
+// 面试题：多态是编译时行为还是运行时行为? 如何证明？
+public class InterviewTest {
+    public static Animal getInstance(int key) {
+        switch(key) {
+            case 0 :
+                return new Cat();
+            case 1 :
+                return new Dog();
+            default:
+                return new Sheep();
+        }
+    }
+    public static void main(String[] args) {
+        int key = new Random().nextInt(3);
+        System.out.println(key);
+        Animal animal = getInstance(key);
+        animal.eat();
+        // 多态是运行时行为，因为只有程序运行后才能确定调用的是哪个子类的eat方法
+    }
+}
+class Animal {
+    protected void eat() {
+        System.out.println("animal eat food");
+    }
+}
+class Cat extends Animal {
+    protected void eat() {
+        System.out.println("cat eat fish");
+    }
+}
+class Dog extends Animal {
+    protected void eat() {
+        System.out.println("dog eat bone");
+    }
+}
+class Sheep extends Animal {
+    protected void eat() {
+        System.out.println("sheep eat grass");
+    }
+}
+```
+
+小结：方法的重载和重写
+
+1. 二者的定义细节
+
+2. 从编译和运行的角度看：
+
+   ​		重载，是指允许存在多个同名方法，而这些方法的参数列表不同。编译器根据方法不同的参数列表，对同名方法的名称做修饰。对于编译器而言，这些同名方法实际上是不同的方法，**它们的调用地址在编译期就绑定了**。Java的重载是可以包括父类和子类的，即子类可以重载父类的同名不同参的方法。所以：对于重载而言，在方法调用之前，编译器就已经确定了将要调用的方法，这称为`早绑定`或`静态绑定`。
+
+   ​		重写，子类中重写了父类方法，在多态情况下（父类引用指向子类对象），将此时父类中被重写的方法称为虚拟方法，父类根据赋给它的不同子类对象，在运行时动态调用属于子类的重写方法。**这种方法调用在编译期是无法确定的**。只有等到方法调用的那一刻，解释运行器才会确定所要调用的具体方法，这称为`晚绑定`或`动态绑定`。
+
+   `不要犯傻，如果它不是晚绑定，它就不是多态。		-- Bruce Eckel`	所以重载并不是多态。
+
+### 向下转型
+
+有了对象的多态性以后，内存中实际上是加载了子类特有的属性和方法的，但是由于变量声明为父类类型，导致编译时只能调用父类中声明的属性和方法，子类特有的属性和方法不能调用。
+
+```java
+public class Test {
+    public static void main() {
+    	Person p1 = new Man(); // 父类的引用指向子类的对象
+    	p1.eat(); // 男人：大口吃肉	（虚拟方法调用）
+    	p1.earnMoney(); // 编译时报错，只能调用Person类中声明了的方法
+        Man m1 = (Man)p1; // 向下转型：使用强制类型转换。
+        m1.earnMoney();
+        // 强转时，可能出现ClassCastException
+        Woman w1 = (Woman)p1; // 运行时异常
+        w1.goShopping();
+	}
+}
+class Person {
+    private String name;
+    private int age;
+    public void eat() {
+        System.out.println("人：吃饭");
+    }
+}
+class Man extends Person {
+    private boolean isSmoking;
+    public void eat() {
+        System.out.println("男人：大口吃肉");
+    }
+    public void earnMoney() {
+        System.out.println("男人：挣钱养家");
+    }
+}
+class Woman extends Person {
+    private boolean isBeauty;
+    public void eat() {
+        System.out.println("女人：小口吃饭");
+    }
+    public void goShopping() {
+        System.out.println("女人：购物");
+    }
+}
+```
+
+多态是向上转型。
