@@ -1,0 +1,9 @@
+尚硅谷Java路线图				https://www.bilibili.com/read/cv5216534?spm_id_from=333.788.b_636f6d6d656e74.6
+
+JavaGuide							https://snailclimb.gitee.io/javaguide-interview/#/
+
+常用插件								https://juejin.cn/post/6937092573429235720?utm_source=gold_browser_extension
+
+面试经验								https://juejin.cn/post/6937900023971758116?utm_source=gold_browser_extension
+
+MySQL索引							http://www.liuzk.com/410.html
