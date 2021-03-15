@@ -7,3 +7,5 @@ JavaGuide							https://snailclimb.gitee.io/javaguide-interview/#/
 面试经验								https://juejin.cn/post/6937900023971758116?utm_source=gold_browser_extension
 
 MySQL索引							http://www.liuzk.com/410.html
+
+计算机基础							http://www.cyc2018.xyz/
